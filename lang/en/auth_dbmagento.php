@@ -18,7 +18,7 @@
 /**
  * Strings for component 'auth_db', language 'en', branch 'MOODLE_20_STABLE'
  *
- * @package   auth_dbx
+ * @package   auth_dbmagento
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,7 +28,7 @@ $string['auth_dbdebugauthdb'] = 'Debug ADOdb';
 $string['auth_dbdebugauthdbhelp'] = 'Debug ADOdb connection to external database - use when getting empty page during login. Not suitable for production sites.';
 $string['auth_dbdeleteuser'] = 'Deleted user {$a->name} id {$a->id}';
 $string['auth_dbdeleteusererror'] = 'Error deleting user {$a}';
-$string['auth_dbxdescription'] = 'This method uses an external database table to check whether a given username and password is valid.  If the account is a new one, then information from other fields may also be copied across into Moodle. Additionally salts can be prefixed or postfixed to passwords before they are checked.';
+$string['auth_dbmagentodescription'] = 'This method uses an external database table to check whether a given username and password is valid.  If the account is a new one, then information from other fields may also be copied across into Moodle. Additionally salts can be prefixed or postfixed to passwords before they are checked.';
 $string['auth_dbextencoding'] = 'External db encoding';
 $string['auth_dbextencodinghelp'] = 'Encoding used in external database';
 $string['auth_dbextrafields'] = 'These fields are optional.  You can choose to pre-fill some Moodle user fields with information from the <b>external database fields</b> that you specify here. <p>If you leave these blank, then defaults will be used.</p><p>In either case, the user will be able to edit all of these fields after they log in.</p>';
@@ -69,4 +69,6 @@ $string['auth_dbuser_key'] = 'DB user';
 $string['auth_dbusernotexist'] = 'Cannot update non-existent user: {$a}';
 $string['auth_dbuserstoadd'] = 'User entries to add: {$a}';
 $string['auth_dbuserstoremove'] = 'User entries to remove: {$a}';
-$string['pluginname'] = 'External database X';
+$string['pluginname'] = 'External database Magento';
+
+$string['auth_magento'] = 'Magento';

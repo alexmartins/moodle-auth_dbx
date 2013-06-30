@@ -59,7 +59,7 @@
 <table cellspacing="0" cellpadding="5" border="0">
 
 <tr valign="top" class="required">
-    <td align="right"><label for="host"><?php print_string("auth_dbhost_key", "auth_dbx") ?></label></td>
+    <td align="right"><label for="host"><?php print_string("auth_dbhost_key", "auth_dbmagento") ?></label></td>
     <td>
         <input id="host" name="host" type="text" size="30" value="<?php echo $config->host?>" />
         <?php
@@ -70,11 +70,11 @@
 
         ?>
     </td>
-    <td><?php print_string("auth_dbhost", "auth_dbx") ?></td>
+    <td><?php print_string("auth_dbhost", "auth_dbmagento") ?></td>
 </tr>
 
 <tr valign="top" class="required">
-    <td align="right"><label for="menutype"><?php print_string("auth_dbtype_key", "auth_dbx") ?></label></td>
+    <td align="right"><label for="menutype"><?php print_string("auth_dbtype_key", "auth_dbmagento") ?></label></td>
     <td>
     <?php  $dbtypes = array("access","ado_access", "ado", "ado_mssql", "borland_ibase", "csv", "db2", "fbsql", "firebird", "ibase", "informix72", "informix", "mssql", "mssql_n", "mysql", "mysqli", "mysqlt", "oci805", "oci8", "oci8po", "odbc", "odbc_mssql", "odbc_oracle", "oracle", "postgres64", "postgres7", "postgres", "proxy", "sqlanywhere", "sybase", "vfp");
        foreach ($dbtypes as $dbtype) {
@@ -85,20 +85,20 @@
 
     </td>
     <td>
-    <?php print_string("auth_dbtype","auth_dbx") ?>
+    <?php print_string("auth_dbtype","auth_dbmagento") ?>
     </td>
 </tr>
 
 <tr valign="top" class="required">
-    <td align="right"><label for="menusybasequoting"><?php print_string("auth_dbsybasequoting", "auth_dbx") ?></label></td>
+    <td align="right"><label for="menusybasequoting"><?php print_string("auth_dbsybasequoting", "auth_dbmagento") ?></label></td>
     <td>
         <?php echo html_writer::select($yesno, 'sybasequoting', $config->sybasequoting, false); ?>
     </td>
-    <td><?php print_string("auth_dbsybasequotinghelp", "auth_dbx") ?></td>
+    <td><?php print_string("auth_dbsybasequotinghelp", "auth_dbmagento") ?></td>
 </tr>
 
 <tr valign="top" class="required">
-    <td align="right"><label for="name"><?php print_string("auth_dbname_key", "auth_dbx") ?></label></td>
+    <td align="right"><label for="name"><?php print_string("auth_dbname_key", "auth_dbmagento") ?></label></td>
     <td>
         <input id="name" name="name" type="text" size="30" value="<?php echo $config->name?>" />
         <?php
@@ -109,11 +109,11 @@
 
         ?>
     </td>
-    <td><?php print_string("auth_dbname", "auth_dbx") ?></td>
+    <td><?php print_string("auth_dbname", "auth_dbmagento") ?></td>
 </tr>
 
 <tr valign="top" class="required">
-    <td align="right"><label for="user"><?php print_string("auth_dbuser_key", "auth_dbx") ?></label></td>
+    <td align="right"><label for="user"><?php print_string("auth_dbuser_key", "auth_dbmagento") ?></label></td>
     <td>
         <input id="user" name="user" type="text" size="30" value="<?php echo $config->user?>" />
         <?php
@@ -124,11 +124,11 @@
 
         ?>
     </td>
-    <td><?php print_string("auth_dbuser", "auth_dbx") ?></td>
+    <td><?php print_string("auth_dbuser", "auth_dbmagento") ?></td>
 </tr>
 
 <tr valign="top" class="required">
-    <td align="right"><label for="pass"><?php print_string("auth_dbpass_key", "auth_dbx") ?></label></td>
+    <td align="right"><label for="pass"><?php print_string("auth_dbpass_key", "auth_dbmagento") ?></label></td>
     <td>
         <input id="pass" name="pass" type="text" size="30" value="<?php echo $config->pass?>" />
         <?php
@@ -140,12 +140,12 @@
         ?>
     </td>
     <td>
-    <?php print_string("auth_dbpass", "auth_dbx") ?>
+    <?php print_string("auth_dbpass", "auth_dbmagento") ?>
     </td>
 </tr>
 
 <tr valign="top" class="required">
-    <td align="right"><label for="table"><?php print_string("auth_dbtable_key", "auth_dbx") ?></label></td>
+    <td align="right"><label for="table"><?php print_string("auth_dbtable_key", "auth_dbmagento") ?></label></td>
     <td>
         <input id="table" name="table" type="text" size="30" value="<?php echo $config->table?>" />
         <?php
@@ -156,11 +156,11 @@
 
         ?>
     </td>
-    <td><?php print_string("auth_dbtable", "auth_dbx") ?></td>
+    <td><?php print_string("auth_dbtable", "auth_dbmagento") ?></td>
 </tr>
 
 <tr valign="top" class="required">
-    <td align="right"><label for="fielduser"><?php print_string("auth_dbfielduser_key", "auth_dbx") ?></label></td>
+    <td align="right"><label for="fielduser"><?php print_string("auth_dbfielduser_key", "auth_dbmagento") ?></label></td>
     <td>
         <input id="fielduser" name="fielduser" type="text" size="30" value="<?php echo $config->fielduser?>" />
         <?php
@@ -171,11 +171,11 @@
 
         ?>
     </td>
-    <td><?php print_string("auth_dbfielduser", "auth_dbx") ?></td>
+    <td><?php print_string("auth_dbfielduser", "auth_dbmagento") ?></td>
 </tr>
 
 <tr valign="top" class="required">
-    <td align="right"><label for="fieldpass"><?php print_string("auth_dbfieldpass_key", "auth_dbx") ?></label></td>
+    <td align="right"><label for="fieldpass"><?php print_string("auth_dbfieldpass_key", "auth_dbmagento") ?></label></td>
     <td>
         <input id="fieldpass" name="fieldpass" type="text" size="30" value="<?php echo $config->fieldpass?>" />
         <?php
@@ -186,11 +186,11 @@
 
         ?>
     </td>
-    <td><?php print_string("auth_dbfieldpass", "auth_dbx") ?></td>
+    <td><?php print_string("auth_dbfieldpass", "auth_dbmagento") ?></td>
 </tr>
 
 <tr valign="top" class="required">
-    <td align="right"><label for="menupasstype"><?php print_string("auth_dbpasstype_key", "auth_dbx") ?></label></td>
+    <td align="right"><label for="menupasstype"><?php print_string("auth_dbpasstype_key", "auth_dbmagento") ?></label></td>
     <td>
         <?php
         $passtype = array();
@@ -198,15 +198,16 @@
         $passtype["md5"]       = get_string("md5", "auth");
         $passtype["sha1"]      = get_string("sha1", "auth");
         $passtype["internal"]  = get_string("internal", "auth");
+        $passtype["magento"]  = get_string("auth_magento", "auth_dbmagento");
         echo html_writer::select($passtype, "passtype", $config->passtype, false);
 
         ?>
     </td>
-    <td><?php print_string("auth_dbpasstype", "auth_dbx") ?></td>
+    <td><?php print_string("auth_dbpasstype", "auth_dbmagento") ?></td>
 </tr>
 
 <tr valign="top">
-    <td align="right"><label for="saltprefix"><?php print_string("auth_dbsaltprefix_key", "auth_dbx") ?></label></td>
+    <td align="right"><label for="saltprefix"><?php print_string("auth_dbsaltprefix_key", "auth_dbmagento") ?></label></td>
     <td>
         <input id="saltprefix" name="saltprefix" type="text" size="30" value="<?php echo $config->saltprefix?>" />
         <?php
@@ -217,11 +218,11 @@
 
         ?>
     </td>
-    <td><?php print_string("auth_dbsaltprefix", "auth_dbx") ?></td>
+    <td><?php print_string("auth_dbsaltprefix", "auth_dbmagento") ?></td>
 </tr>
 
 <tr valign="top">
-    <td align="right"><label for="saltpostfix"><?php print_string("auth_dbsaltpostfix_key", "auth_dbx") ?></label></td>
+    <td align="right"><label for="saltpostfix"><?php print_string("auth_dbsaltpostfix_key", "auth_dbmagento") ?></label></td>
     <td>
         <input id="saltpostfix" name="saltpostfix" type="text" size="30" value="<?php echo $config->saltpostfix?>" />
         <?php
@@ -232,11 +233,11 @@
 
         ?>
     </td>
-    <td><?php print_string("auth_dbsaltpostfix", "auth_dbx") ?></td>
+    <td><?php print_string("auth_dbsaltpostfix", "auth_dbmagento") ?></td>
 </tr>
 
 <tr valign="top" class="required">
-    <td align="right"><label for="extencoding"><?php print_string("auth_dbextencoding", "auth_dbx") ?></label></td>
+    <td align="right"><label for="extencoding"><?php print_string("auth_dbextencoding", "auth_dbmagento") ?></label></td>
     <td>
         <input id="extencoding" name="extencoding" type="text" value="<?php echo $config->extencoding ?>" />
         <?php
@@ -247,27 +248,27 @@
 
         ?>
     </td>
-    <td><?php print_string('auth_dbextencodinghelp', 'auth_dbx') ?></td>
+    <td><?php print_string('auth_dbextencodinghelp', 'auth_dbmagento') ?></td>
 </tr>
 
 <tr valign="top">
-    <td align="right"><label for="setupsql"><?php print_string("auth_dbsetupsql", "auth_dbx") ?></label></td>
+    <td align="right"><label for="setupsql"><?php print_string("auth_dbsetupsql", "auth_dbmagento") ?></label></td>
     <td>
         <input id="setupsql" name="setupsql" type="text" value="<?php echo $config->setupsql ?>" />
     </td>
-    <td><?php print_string('auth_dbsetupsqlhelp', 'auth_dbx') ?></td>
+    <td><?php print_string('auth_dbsetupsqlhelp', 'auth_dbmagento') ?></td>
 </tr>
 
 <tr valign="top">
-    <td align="right"><label for="menudebugauthdb"><?php print_string("auth_dbdebugauthdb", "auth_dbx") ?></label></td>
+    <td align="right"><label for="menudebugauthdb"><?php print_string("auth_dbdebugauthdb", "auth_dbmagento") ?></label></td>
     <td>
         <?php echo html_writer::select($yesno, 'debugauthdb', $config->debugauthdb, false); ?>
     </td>
-    <td><?php print_string("auth_dbdebugauthdbhelp", "auth_dbx") ?></td>
+    <td><?php print_string("auth_dbdebugauthdbhelp", "auth_dbmagento") ?></td>
 </tr>
 
 <tr valign="top">
-    <td align="right"><label for="changepasswordurl"><?php print_string("auth_dbchangepasswordurl_key", "auth_dbx") ?></label></td>
+    <td align="right"><label for="changepasswordurl"><?php print_string("auth_dbchangepasswordurl_key", "auth_dbmagento") ?></label></td>
     <td>
         <input id="changepasswordurl" name="changepasswordurl" type="text" value="<?php echo $config->changepasswordurl ?>" />
         <?php
@@ -305,7 +306,7 @@
 
 <?php
 
-print_auth_lock_options('dbx', $user_fields, get_string('auth_dbextrafields', 'auth_dbx'), true, true);
+print_auth_lock_options('dbmagento', $user_fields, get_string('auth_dbextrafields', 'auth_dbmagento'), true, true);
 
 ?>
 </table>

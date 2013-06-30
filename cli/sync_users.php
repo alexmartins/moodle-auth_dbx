@@ -39,7 +39,7 @@
  * + The code is simpler, but not as optimized as its LDAP counterpart.
  *
  * @package    auth
- * @subpackage dbx
+ * @subpackage dbmagento
  * @copyright  2006 Martin Langhoff
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -49,11 +49,11 @@ define('CLI_SCRIPT', true);
 require(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
 require_once($CFG->dirroot.'/course/lib.php');
 
-if (!is_enabled_auth('dbx')) {
+if (!is_enabled_auth('dbmagento')) {
     echo "Plugin not enabled!";
     die;
 }
 
-$dbauth = get_auth_plugin('dbx');
+$dbauth = get_auth_plugin('dbmagento');
 $dbauth->sync_users(true);
 

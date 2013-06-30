@@ -6,7 +6,7 @@
  * Checks against an external database.
  *
  * @package    auth
- * @subpackage dbx
+ * @subpackage dbmagento
  * @author     Martin Dougiamas
  * @author     Shane Elliott {@link http://pukunui.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License
@@ -20,14 +20,14 @@ require_once($CFG->libdir.'/adodb/adodb.inc.php');
 /**
  * External database authentication plugin.
  */
-class auth_plugin_dbx extends auth_plugin_base {
+class auth_plugin_dbmagento extends auth_plugin_base {
 
     /**
      * Constructor.
      */
-    function auth_plugin_dbx() {
-        $this->authtype = 'dbx';
-        $this->config = get_config('auth/dbx');
+    function auth_plugin_dbmagento() {
+        $this->authtype = 'dbmagento';
+        $this->config = get_config('auth/dbmagento');
         if (empty($this->config->extencoding)) {
             $this->config->extencoding = 'utf-8';
         }
@@ -49,23 +49,23 @@ class auth_plugin_dbx extends auth_plugin_base {
         $extusername = $textlib->convert($username, 'utf-8', $this->config->extencoding);
         $extpassword = $textlib->convert($password, 'utf-8', $this->config->extencoding);
 
-        $authdbx = $this->dbx_init();
+        $authdbmagento = $this->dbmagento_init();
 
         if ($this->is_internal()) {
             // lookup username externally, but resolve
             // password locally -- to support backend that
             // don't track passwords
-            $rs = $authdbx->Execute("SELECT * FROM {$this->config->table}
+            $rs = $authdbmagento->Execute("SELECT * FROM {$this->config->table}
                                      WHERE {$this->config->fielduser} = '".$this->ext_addslashes($extusername)."' ");
             if (!$rs) {
-                $authdbx->Close();
-                debugging(get_string('auth_dbcantconnect','auth_dbx'));
+                $authdbmagento->Close();
+                debugging(get_string('auth_dbcantconnect','auth_dbmagento'));
                 return false;
             }
 
             if (!$rs->EOF) {
                 $rs->Close();
-                $authdbx->Close();
+                $authdbmagento->Close();
                 // user exists externally
                 // check username/password internally
                 if ($user = $DB->get_record('user', array('username'=>$username, 'mnethostid'=>$CFG->mnet_localhost_id))) {
@@ -73,7 +73,7 @@ class auth_plugin_dbx extends auth_plugin_base {
                 }
             } else {
                 $rs->Close();
-                $authdbx->Close();
+                $authdbmagento->Close();
                 // user does not exist externally
                 return false;
             }
@@ -88,49 +88,62 @@ class auth_plugin_dbx extends auth_plugin_base {
             if ($this->config->saltpostfix) {
                 $extpassword = $extpassword.$this->config->saltpostfix;
             }
-//echo $extpassword; die;
+            
+            echo "<pre>";
+            print_r($this->config);
+			echo "<pre>";
+			
+			echo $extpassword; die;
+			exit;
+			
             if ($this->config->passtype === 'md5') {   // Re-format password accordingly
                 $extpassword = md5($extpassword);
             } else if ($this->config->passtype === 'sha1') {
                 $extpassword = sha1($extpassword);
             }
+            ///////////////////////////////////////////////////////////////////////////
+            else if ($this->config->passtype === 'magento') {
+                $hashArray = explode(':', $extpassword);
+                $extpassword = $hashArray[1] . $extpassword;
+            }
+            ///////////////////////////////////////////////////////////////////////////
 
-            $rs = $authdbx->Execute("SELECT * FROM {$this->config->table}
+            $rs = $authdbmagento->Execute("SELECT * FROM {$this->config->table}
                                 WHERE {$this->config->fielduser} = '".$this->ext_addslashes($extusername)."'
                                   AND {$this->config->fieldpass} = '".$this->ext_addslashes($extpassword)."' ");
             if (!$rs) {
-                $authdbx->Close();
-                debugging(get_string('auth_dbcantconnect','auth_dbx'));
+                $authdbmagento->Close();
+                debugging(get_string('auth_dbcantconnect','auth_dbmagento'));
                 return false;
             }
 
             if (!$rs->EOF) {
                 $rs->Close();
-                $authdbx->Close();
+                $authdbmagento->Close();
                 return true;
             } else {
                 $rs->Close();
-                $authdbx->Close();
+                $authdbmagento->Close();
                 return false;
             }
 
         }
     }
 
-    function dbx_init() {
+    function dbmagento_init() {
         // Connect to the external database (forcing new connection)
-        $authdbx = &ADONewConnection($this->config->type);
+        $authdbmagento = &ADONewConnection($this->config->type);
         if (!empty($this->config->debugauthdb)) {
-            $authdbx->debug = true;
+            $authdbmagento->debug = true;
             ob_start();//start output buffer to allow later use of the page headers
         }
-        $authdbx->Connect($this->config->host, $this->config->user, $this->config->pass, $this->config->name, true);
-        $authdbx->SetFetchMode(ADODB_FETCH_ASSOC);
+        $authdbmagento->Connect($this->config->host, $this->config->user, $this->config->pass, $this->config->name, true);
+        $authdbmagento->SetFetchMode(ADODB_FETCH_ASSOC);
         if (!empty($this->config->setupsql)) {
-            $authdbx->Execute($this->config->setupsql);
+            $authdbmagento->Execute($this->config->setupsql);
         }
 
-        return $authdbx;
+        return $authdbmagento;
     }
 
     /**
@@ -138,7 +151,7 @@ class auth_plugin_dbx extends auth_plugin_base {
      *
      * @return array
      */
-    function dbx_attributes() {
+    function dbmagento_attributes() {
         $moodleattributes = array();
         foreach ($this->userfields as $field) {
             if (!empty($this->config->{"field_map_$field"})) {
@@ -163,10 +176,10 @@ class auth_plugin_dbx extends auth_plugin_base {
         $textlib = textlib_get_instance();
         $extusername = $textlib->convert($username, 'utf-8', $this->config->extencoding);
 
-        $authdbx = $this->dbx_init();
+        $authdbmagento = $this->dbmagento_init();
 
         //Array to map local fieldnames we want, to external fieldnames
-        $selectfields = $this->dbx_attributes();
+        $selectfields = $this->dbmagento_attributes();
 
         $result = array();
         //If at least one field is mapped from external db, get that mapped data:
@@ -179,7 +192,7 @@ class auth_plugin_dbx extends auth_plugin_base {
             $sql = $select .
                 " FROM {$this->config->table}" .
                 " WHERE {$this->config->fielduser} = '".$this->ext_addslashes($extusername)."'";
-            if ($rs = $authdbx->Execute($sql)) {
+            if ($rs = $authdbmagento->Execute($sql)) {
                 if ( !$rs->EOF ) {
                     $fields_obj = $rs->FetchObj();
                     $fields_obj = (object)array_change_key_case((array)$fields_obj , CASE_LOWER);
@@ -190,7 +203,7 @@ class auth_plugin_dbx extends auth_plugin_base {
                  $rs->Close();
             }
         }
-        $authdbx->Close();
+        $authdbmagento->Close();
         return $result;
     }
 
@@ -252,21 +265,21 @@ class auth_plugin_dbx extends auth_plugin_base {
             $remove_users = $DB->get_records_sql($sql, $params);
 
             if (!empty($remove_users)) {
-                print_string('auth_dbuserstoremove','auth_dbx', count($remove_users)); echo "\n";
+                print_string('auth_dbuserstoremove','auth_dbmagento', count($remove_users)); echo "\n";
 
                 foreach ($remove_users as $user) {
                     if ($this->config->removeuser == AUTH_REMOVEUSER_FULLDELETE) {
                         if (delete_user($user)) {
-                            echo "\t"; print_string('auth_dbdeleteuser', 'auth_dbx', array('name'=>$user->username, 'id'=>$user->id)); echo "\n";
+                            echo "\t"; print_string('auth_dbdeleteuser', 'auth_dbmagento', array('name'=>$user->username, 'id'=>$user->id)); echo "\n";
                         } else {
-                            echo "\t"; print_string('auth_dbdeleteusererror', 'auth_dbx', $user->username); echo "\n";
+                            echo "\t"; print_string('auth_dbdeleteusererror', 'auth_dbmagento', $user->username); echo "\n";
                         }
                     } else if ($this->config->removeuser == AUTH_REMOVEUSER_SUSPEND) {
                         $updateuser = new stdClass();
                         $updateuser->id   = $user->id;
                         $updateuser->auth = 'nologin';
                         $DB->update_record('user', $updateuser);
-                        echo "\t"; print_string('auth_dbsuspenduser', 'auth_dbx', array('name'=>$user->username, 'id'=>$user->id)); echo "\n";
+                        echo "\t"; print_string('auth_dbsuspenduser', 'auth_dbmagento', array('name'=>$user->username, 'id'=>$user->id)); echo "\n";
                     }
                 }
             }
@@ -308,7 +321,7 @@ class auth_plugin_dbx extends auth_plugin_base {
                     print "User entries to update: ". count($update_users). "\n";
 
                     foreach ($update_users as $user) {
-                        echo "\t"; print_string('auth_dbupdatinguser', 'auth_dbx', array('name'=>$user->username, 'id'=>$user->id));
+                        echo "\t"; print_string('auth_dbupdatinguser', 'auth_dbmagento', array('name'=>$user->username, 'id'=>$user->id));
                         if (!$this->update_user_record($user->username, $updatekeys)) {
                             echo " - ".get_string('skipped');
                         }
@@ -364,11 +377,11 @@ class auth_plugin_dbx extends auth_plugin_base {
                 if ($old_user = $DB->get_record('user', array('username'=>$user->username, 'deleted'=>1, 'mnethostid'=>$user->mnethostid))) {
                     $user->id = $old_user->id;
                     $DB->set_field('user', 'deleted', 0, array('username'=>$user->username));
-                    echo "\t"; print_string('auth_dbreviveduser', 'auth_dbx', array('name'=>$user->username, 'id'=>$user->id)); echo "\n";
+                    echo "\t"; print_string('auth_dbreviveduser', 'auth_dbmagento', array('name'=>$user->username, 'id'=>$user->id)); echo "\n";
 
                 } else {
                     $id = $DB->insert_record ('user',$user); // it is truly a new user
-                    echo "\t"; print_string('auth_dbinsertuser','auth_dbx',array('name'=>$user->username, 'id'=>$id)); echo "\n";
+                    echo "\t"; print_string('auth_dbinsertuser','auth_dbmagento',array('name'=>$user->username, 'id'=>$id)); echo "\n";
                     // if relevant, tag for password generation
                     if ($this->is_internal()) {
                         set_user_preference('auth_forcepasswordchange', 1, $id);
@@ -390,9 +403,9 @@ class auth_plugin_dbx extends auth_plugin_base {
         $textlib = textlib_get_instance();
         $extusername = $textlib->convert($username, 'utf-8', $this->config->extencoding);
 
-        $authdbx = $this->dbx_init();
+        $authdbmagento = $this->dbmagento_init();
 
-        $rs = $authdbx->Execute("SELECT * FROM {$this->config->table}
+        $rs = $authdbmagento->Execute("SELECT * FROM {$this->config->table}
                                      WHERE {$this->config->fielduser} = '".$this->ext_addslashes($extusername)."' ");
 
         if (!$rs) {
@@ -402,7 +415,7 @@ class auth_plugin_dbx extends auth_plugin_base {
             $result = true;
         }
 
-        $authdbx->Close();
+        $authdbmagento->Close();
         return $result;
     }
 
@@ -412,14 +425,14 @@ class auth_plugin_dbx extends auth_plugin_base {
     /// Init result value
         $result = array();
 
-        $authdbx = $this->dbx_init();
+        $authdbmagento = $this->dbmagento_init();
 
         // fetch userlist
-        $rs = $authdbx->Execute("SELECT {$this->config->fielduser} AS username
+        $rs = $authdbmagento->Execute("SELECT {$this->config->fielduser} AS username
                                 FROM   {$this->config->table} ");
 
         if (!$rs) {
-            print_error('auth_dbcantconnect','auth_dbx');
+            print_error('auth_dbcantconnect','auth_dbmagento');
         } else if (!$rs->EOF) {
             while ($rec = $rs->FetchRow()) {
                 $rec = (object)array_change_key_case((array)$rec , CASE_LOWER);
@@ -427,7 +440,7 @@ class auth_plugin_dbx extends auth_plugin_base {
             }
         }
 
-        $authdbx->Close();
+        $authdbmagento->Close();
         return $result;
     }
 
@@ -466,7 +479,7 @@ class auth_plugin_dbx extends auth_plugin_base {
         $user = $DB->get_record('user', array('username'=>$username, 'mnethostid'=>$CFG->mnet_localhost_id));
         if (empty($user)) { // trouble
             error_log("Cannot update non-existent user: $username");
-            print_error('auth_dbusernotexist','auth_dbx',$username);
+            print_error('auth_dbusernotexist','auth_dbmagento',$username);
             die;
         }
 
@@ -526,7 +539,7 @@ class auth_plugin_dbx extends auth_plugin_base {
         $textlib = textlib_get_instance();
         $extusername = $textlib->convert($olduser->username, 'utf-8', $this->config->extencoding);
 
-        $authdbx = $this->dbx_init();
+        $authdbmagento = $this->dbmagento_init();
 
         $update = array();
         foreach($curruser as $key=>$value) {
@@ -549,7 +562,7 @@ class auth_plugin_dbx extends auth_plugin_base {
                                  SET ".implode(',', $update)."
                                WHERE {$this->config->fielduser}='".$this->ext_addslashes($extusername)."'");
         }
-        $authdbx->Close();
+        $authdbmagento->Close();
         return true;
     }
 
@@ -560,7 +573,7 @@ class auth_plugin_dbx extends auth_plugin_base {
      function validate_form(&$form, &$err) {
         if ($form->passtype === 'internal') {
             $this->config->changepasswordurl = '';
-            set_config('changepasswordurl', '', 'auth/dbx');
+            set_config('changepasswordurl', '', 'auth/dbmagento');
         }
     }
 
@@ -698,23 +711,23 @@ class auth_plugin_dbx extends auth_plugin_base {
         }
 
         // save settings
-        set_config('host',          $config->host,          'auth/dbx');
-        set_config('type',          $config->type,          'auth/dbx');
-        set_config('sybasequoting', $config->sybasequoting, 'auth/dbx');
-        set_config('name',          $config->name,          'auth/dbx');
-        set_config('user',          $config->user,          'auth/dbx');
-        set_config('pass',          $config->pass,          'auth/dbx');
-        set_config('table',         $config->table,         'auth/dbx');
-        set_config('fielduser',     $config->fielduser,     'auth/dbx');
-        set_config('fieldpass',     $config->fieldpass,     'auth/dbx');
-        set_config('passtype',      $config->passtype,      'auth/dbx');
-        set_config('saltprefix',    $config->saltprefix,    'auth/dbx');
-        set_config('saltpostfix',   $config->saltpostfix,   'auth/dbx');
-        set_config('extencoding',   trim($config->extencoding), 'auth/dbx');
-        set_config('setupsql',      trim($config->setupsql),'auth/dbx');
-        set_config('debugauthdb',   $config->debugauthdb,   'auth/dbx');
-        set_config('removeuser',    $config->removeuser,    'auth/dbx');
-        set_config('changepasswordurl', trim($config->changepasswordurl), 'auth/dbx');
+        set_config('host',          $config->host,          'auth/dbmagento');
+        set_config('type',          $config->type,          'auth/dbmagento');
+        set_config('sybasequoting', $config->sybasequoting, 'auth/dbmagento');
+        set_config('name',          $config->name,          'auth/dbmagento');
+        set_config('user',          $config->user,          'auth/dbmagento');
+        set_config('pass',          $config->pass,          'auth/dbmagento');
+        set_config('table',         $config->table,         'auth/dbmagento');
+        set_config('fielduser',     $config->fielduser,     'auth/dbmagento');
+        set_config('fieldpass',     $config->fieldpass,     'auth/dbmagento');
+        set_config('passtype',      $config->passtype,      'auth/dbmagento');
+        set_config('saltprefix',    $config->saltprefix,    'auth/dbmagento');
+        set_config('saltpostfix',   $config->saltpostfix,   'auth/dbmagento');
+        set_config('extencoding',   trim($config->extencoding), 'auth/dbmagento');
+        set_config('setupsql',      trim($config->setupsql),'auth/dbmagento');
+        set_config('debugauthdb',   $config->debugauthdb,   'auth/dbmagento');
+        set_config('removeuser',    $config->removeuser,    'auth/dbmagento');
+        set_config('changepasswordurl', trim($config->changepasswordurl), 'auth/dbmagento');
 
         return true;
     }
