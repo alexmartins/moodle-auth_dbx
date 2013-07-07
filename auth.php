@@ -88,26 +88,17 @@ class auth_plugin_dbmagento extends auth_plugin_base {
             if ($this->config->saltpostfix) {
                 $extpassword = $extpassword.$this->config->saltpostfix;
             }
-            
-            echo "<pre>";
-            print_r($this->config);
-			echo "<pre>";
-			
-			echo $extpassword; die;
-			exit;
-			
+
             if ($this->config->passtype === 'md5') {   // Re-format password accordingly
                 $extpassword = md5($extpassword);
             } else if ($this->config->passtype === 'sha1') {
                 $extpassword = sha1($extpassword);
+            } else if ($this->config->passtype === 'magento') {
+                $hashArray = explode(':', $this->dbmagento_pass($extusername));
+				$extpassword = md5($hashArray[1] . $extpassword );
+				$extpassword = $extpassword . ":" . $hashArray[1];				
             }
-            ///////////////////////////////////////////////////////////////////////////
-            else if ($this->config->passtype === 'magento') {
-                $hashArray = explode(':', $extpassword);
-                $extpassword = $hashArray[1] . $extpassword;
-            }
-            ///////////////////////////////////////////////////////////////////////////
-
+            
             $rs = $authdbmagento->Execute("SELECT * FROM {$this->config->table}
                                 WHERE {$this->config->fielduser} = '".$this->ext_addslashes($extusername)."'
                                   AND {$this->config->fieldpass} = '".$this->ext_addslashes($extpassword)."' ");
@@ -129,6 +120,36 @@ class auth_plugin_dbmagento extends auth_plugin_base {
 
         }
     }
+	
+    /**
+     * retuns user password
+     *
+     * @return string
+     */	
+	function dbmagento_pass($username){
+        global $CFG;
+
+        $textlib = textlib_get_instance();
+        $extusername = $textlib->convert($username, 'utf-8', $this->config->extencoding);
+
+        $authdbmagento = $this->dbmagento_init();
+
+        //Array to map local fieldnames we want, to external fieldnames
+        $selectfields = "password AS password";
+
+        $result = array();
+        //If at least one field is mapped from external db, get that mapped data:
+        
+        $select = 'SELECT ' . $selectfields;
+        $sql = $select . 
+        	" FROM {$this->config->table}" .
+         	" WHERE {$this->config->fielduser} = '".$this->ext_addslashes($extusername)."'";
+        
+        $rs = $authdbmagento->Execute($sql);
+        $authdbmagento->Close();       
+		
+		return $rs->fields['password'];	
+	}
 
     function dbmagento_init() {
         // Connect to the external database (forcing new connection)
